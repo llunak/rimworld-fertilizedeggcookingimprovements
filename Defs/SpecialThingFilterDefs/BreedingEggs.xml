@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <SpecialThingFilterDef>
+    <defName>EFI_HatchingEggs</defName>
+    <label>allow hatching eggs</label>
+    <description>Allow fertilized eggs even if colony animals of the animal type are not at the full count.</description>
+    <parentCategory>EggsFertilized</parentCategory>
+    <allowedByDefault>true</allowedByDefault>
+    <saveKey>EFI_HatchingEggs</saveKey>
+    <workerClass>FertilizedEggCookingImprovements.SpecialThingFilterWorker_HatchingEggs</workerClass>
+  </SpecialThingFilterDef>
+
+</Defs>
