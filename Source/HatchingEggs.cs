@@ -61,7 +61,8 @@ public class SpecialThingFilterWorker_HatchingEggs : SpecialThingFilterWorker
         List< Thing > eggs = map.listerThings.ThingsOfDef( thing.def );
         int totalEggCount = 0;
         foreach( Thing egg in eggs )
-            totalEggCount += egg.stackCount;
+            if( map.areaManager.Home[ egg.Position ] )
+                totalEggCount += egg.stackCount;
         // There are not enough eggs, every egg is a hatching egg.
         if( record.maleYoung + record.femaleYoung + totalEggCount < config.maxMalesYoung + config.maxFemalesYoung )
             return true;
