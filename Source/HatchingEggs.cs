@@ -53,9 +53,7 @@ public class SpecialThingFilterWorker_HatchingEggs : SpecialThingFilterWorker
         dialog.CountPlayerAnimals(map, config, config.animal, out record.male, out record.maleYoung,
             out record.female, out record.femaleYoung, out record.total, out record.pregnant, out record.bonded);
         // Animals at full count, this egg is not needed for hatching.
-        // With 'Improved Auto Slaughter' young actually refers to all (=adults+young).
-        // TODO vanilla
-        if( record.maleYoung >= config.maxMalesYoung && record.femaleYoung >= config.maxFemalesYoung )
+        if( isFullAnimalCount( config, record, 0 ))
             return false;
         // TODO this counts only things on the ground
         List< Thing > eggs = map.listerThings.ThingsOfDef( thing.def );
@@ -64,20 +62,17 @@ public class SpecialThingFilterWorker_HatchingEggs : SpecialThingFilterWorker
             if( map.areaManager.Home[ egg.Position ] )
                 totalEggCount += egg.stackCount;
         // There are not enough eggs, every egg is a hatching egg.
-        if( record.maleYoung + record.femaleYoung + totalEggCount < config.maxMalesYoung + config.maxFemalesYoung )
+        if( !isFullAnimalCount( config, record, totalEggCount ))
             return true;
         // Eggs in storages with allowed hatching eggs.
         int hatchingEggCount = 0;
         foreach( Thing egg in eggs )
             if( isInHatchingLocation( egg ))
                 hatchingEggCount += egg.stackCount;
-        // TODO how to handle the uncertainty that an egg may hatch into a male or female?
-        if( record.maleYoung + record.femaleYoung + hatchingEggCount >= config.maxMalesYoung + config.maxFemalesYoung )
-        {
-            // There are enough eggs in zones that accept hatching eggs, so those are hatching eggs,
-            // the rest are not.
+        // If there are enough eggs in zones that accept hatching eggs, those are hatching eggs,
+        // the rest are not.
+        if( isFullAnimalCount( config, record, hatchingEggCount ))
             return isInHatchingLocation( thing );
-        }
         // Enough total eggs, but not enough in zones that allow hatching eggs, consider every egg to be a hatching egg,
         // until those zones get sufficient number.
         return true;
@@ -100,6 +95,19 @@ public class SpecialThingFilterWorker_HatchingEggs : SpecialThingFilterWorker
         {
             return true;
         }
+        return false;
+    }
+
+    private static bool isFullAnimalCount( AutoSlaughterConfig config, Dialog_AutoSlaughter.AnimalCountRecord record, int eggs )
+    {
+        if( config.maxTotal != -1 )
+            return record.total + eggs >= config.maxTotal;
+        // With 'Improved Auto Slaughter' young actually refers to all (=adults+young).
+        // Without it, it makes sense only to count young ones, as newly hatches eggs cannot (immediately) replenish adults.
+        // The '/ 4' is because this assumes that at least a quarter of the eggs will hatch into the expected gender.
+        if( config.maxMalesYoung != -1 && config.maxFemalesYoung != -1 )
+            return record.maleYoung + eggs / 4 >= config.maxMalesYoung && record.femaleYoung + eggs / 4 >= config.maxFemalesYoung;
+        // Otherwise there is probably(?) no reasonable way to do this.
         return false;
     }
 }
