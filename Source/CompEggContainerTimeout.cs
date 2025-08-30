@@ -39,11 +39,14 @@ public static class CompEggContainer_Patch
             return true;
         if(__instance.Empty)
             return false;
+        Thing thing = __instance.ContainedThing;
+        // Fertilized eggs once a day, unfertilized ones once each 5 days.
+        int maxDays = thing.def.thingCategories.Contains(ThingCategoryDefOf.EggsFertilized) ? 1 : 5;
         CompEggContainerTimeout comp = __instance.parent.GetComp<CompEggContainerTimeout>();
         if( comp == null )
             return false;
-        // Allow if last emptied at least two days ago.
-        return comp.lastEmptied + GenDate.TicksPerDay * 2 < GenTicks.TicksGame;
+        // Allow if last emptied at least given days ago.
+        return comp.lastEmptied + GenDate.TicksPerDay * maxDays < GenTicks.TicksGame;
     }
 }
 
