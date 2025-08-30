@@ -3,7 +3,7 @@
     <OutputPath>..\Assemblies</OutputPath>
     <TargetFramework>net472</TargetFramework>
     <AssemblyTitle>Fertilized Egg Cooking Improvements</AssemblyTitle>
-    <AssemblyVersion>2025.0108.1</AssemblyVersion>
+    <AssemblyVersion>2025.0830.1</AssemblyVersion>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <LangVersion>latest</LangVersion>
